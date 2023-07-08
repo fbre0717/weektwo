@@ -1,3 +1,17 @@
+# 시작하는 방법
+```
+git clone https://github.com/fbre0717/weektwo.git
+```
+```
+npm uninstall -g react-native-cli
+```
+```
+npm install
+```
+```
+npx react-native run-android
+```
+<br><br><br><br>
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
