@@ -11,7 +11,7 @@ function SignUpScreen({navigation}) {
     if (userId == '' || password == '' || username == '') {
       Alert.alert('경고', '다시 입력해주세요');
     } else {
-      fetch(NET_IP + 'signIn', {
+      fetch(NET_IP + 'signUp', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -32,9 +32,14 @@ function SignUpScreen({navigation}) {
           }
         })
         .then(responseData => {
-          console.log(JSON.stringify(responseData));
-          Alert.alert("축하","회원가입이 완료되었습니다")
-          return navigation.navigate('Tabs');
+          // console.log(JSON.stringify(responseData));
+          console.log(responseData['message']);
+          if (responseData['message'] == '회원 가입에 성공하였습니다.') {
+            Alert.alert('축하', '회원가입이 완료되었습니다');
+            return navigation.navigate('Tabs');
+          } else {
+            Alert.alert('경고', '회원가입에 실패했습니다');
+          }
         })
         .catch(error => {
           console.error('Error:', error);

@@ -3,9 +3,10 @@ import {Button, View, Text, TextInput} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import Tabs from './Screen/TabsScreen';
+import TabNavigation from './Screen/TabsScreen';
 import SignUpScreen from './Screen/SignUpScreen';
 import SignInScreen from './Screen/SignInScreen';
+import DiaryDetailScreen from './Screen/Tab/DiaryDetailScreen';
 
 function HomeScreen({navigation}) {
   return (
@@ -32,6 +33,11 @@ function DetailsScreen({navigation}) {
           title="회원가입"
           onPress={() => navigation.navigate('SignUp')}
         />
+        <Text>{'  '}</Text>
+        <Button
+          title="비회원로그인"
+          onPress={() => navigation.navigate('Tabs')}
+        />
       </View>
     </View>
   );
@@ -47,7 +53,8 @@ function App() {
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="SignIn" component={SignInScreen} />
-        <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="Tabs" component={TabNavigation} />
+        <Stack.Screen name="DiaryDetail" component={DiaryDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

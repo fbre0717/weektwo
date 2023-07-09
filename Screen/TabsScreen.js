@@ -1,81 +1,18 @@
 import * as React from 'react';
-import {ScrollView, Text, View} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+import HomeScreen from './Tab/HomeScreen';
+import SettingsScreen from './Tab/SettingsScreen';
+import DiaryScreen from './Tab/DiaryScreen';
 
-function SettingsScreen() {
-  return (
-    <ScrollView>
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-        <Text style={{fontSize: 24}}>Settings!</Text>
-      </View>
-    </ScrollView>
-  );
-}
+const TabNavigator = createBottomTabNavigator();
 
-function ChatRoomsScreen() {
+export default function TabNavigation() {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>ChatRooms!</Text>
-    </View>
-  );
-}
-
-const Tab = createBottomTabNavigator();
-
-export default function Tabs() {
-  return (
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-        <Tab.Screen name="ChatRooms" component={ChatRoomsScreen} />
-      </Tab.Navigator>
+    <TabNavigator.Navigator>
+      <TabNavigator.Screen name="Home" component={HomeScreen} />
+      <TabNavigator.Screen name="Settings" component={SettingsScreen} />
+      <TabNavigator.Screen name="Diary" component={DiaryScreen} />
+    </TabNavigator.Navigator>
   );
 }
