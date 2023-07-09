@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+import {FAB} from 'react-native-paper';
+
 import {
   ScrollView,
   StyleSheet,
@@ -8,6 +10,9 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   diaryItem: {
     padding: 10,
     marginVertical: 5,
@@ -20,6 +25,12 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 16,
     paddingTop: 5,
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
 
@@ -56,7 +67,7 @@ const DiaryScreen = ({navigation}) => {
       <View style={styles.diaryItem}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate('DiaryDetail', {data: data})
+            navigation.navigate('DiaryDetailScreen', {data: data})
           }>
           <Text style={styles.title}>{data.title}</Text>
         </TouchableOpacity>
@@ -65,13 +76,20 @@ const DiaryScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView>
-      <View>
-        {diaryDB.map((data, index) => (
-          <DiaryItems key={index} data={data} />
-        ))}
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView>
+        <View>
+          {diaryDB.map((data, index) => (
+            <DiaryItems key={index} data={data} />
+          ))}
+        </View>
+      </ScrollView>
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('WriteScreen')}
+      />
+    </View>
   );
 };
 

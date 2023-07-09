@@ -1,6 +1,22 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, Button, Alert} from 'react-native';
+import {View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native';
 import {NET_IP} from '@env';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    width: '80%',
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+  },
+});
 
 function SignInScreen({navigation}) {
   const [userId, setUserId] = useState('');
@@ -31,7 +47,7 @@ function SignInScreen({navigation}) {
         })
         .then(responseData => {
           console.log(JSON.stringify(responseData));
-          return navigation.navigate('Tabs');
+          return navigation.navigate('TabNavigation');
         })
         .catch(error => {
           console.error('Error:', error);
@@ -40,39 +56,24 @@ function SignInScreen({navigation}) {
   };
 
   return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+    <View style={styles.container}>
       <Text style={{fontSize: 24}}>로그인</Text>
       <Text>{'\n'}</Text>
       <TextInput
-        style={{
-          width: '80%',
-          height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          borderRadius: 5,
-          padding: 5,
-        }}
+        style={styles.content}
         onChangeText={text => setUserId(text)}
         value={userId}
         placeholder="아이디를 입력하세요"
       />
       <Text>{'\n'}</Text>
       <TextInput
-        style={{
-          width: '80%',
-          height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          borderRadius: 5,
-          padding: 5,
-        }}
+        style={styles.content}
         onChangeText={text => setPassword(text)}
         value={password}
         placeholder="비밀번호를 입력하세요"
         secureTextEntry
       />
       <Text>{'\n'}</Text>
-      {/* <Button title="로그인" onPress={() => navigation.navigate('Tabs')} /> */}
       <Button title="로그인" onPress={onSignIn} />
     </View>
   );
