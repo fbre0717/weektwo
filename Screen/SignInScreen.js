@@ -2,13 +2,12 @@ import React, {useState} from 'react';
 import {View, Text, TextInput, Button, Alert} from 'react-native';
 import {NET_IP} from '@env';
 
-function SignUpScreen({navigation}) {
-  const [username, setUsername] = useState('');
+function SignInScreen({navigation}) {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSignUp = async () => {
-    if (userId == '' || password == '' || username == '') {
+  const onSignIn = async () => {
+    if (userId == '' || password == '') {
       Alert.alert('경고', '다시 입력해주세요');
     } else {
       fetch(NET_IP + 'signIn', {
@@ -20,7 +19,6 @@ function SignUpScreen({navigation}) {
         body: JSON.stringify({
           userId: userId,
           password: password,
-          username: username,
         }),
       })
         .then(response => {
@@ -33,7 +31,6 @@ function SignUpScreen({navigation}) {
         })
         .then(responseData => {
           console.log(JSON.stringify(responseData));
-          Alert.alert("축하","회원가입이 완료되었습니다")
           return navigation.navigate('Tabs');
         })
         .catch(error => {
@@ -44,21 +41,7 @@ function SignUpScreen({navigation}) {
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text style={{fontSize: 24}}>회원가입</Text>
-      <Text>{'\n'}</Text>
-      <TextInput
-        style={{
-          width: '80%',
-          height: 40,
-          borderColor: 'gray',
-          borderWidth: 1,
-          borderRadius: 5,
-          padding: 5,
-        }}
-        onChangeText={text => setUsername(text)}
-        value={username}
-        placeholder="이름을 입력하세요"
-      />
+      <Text style={{fontSize: 24}}>로그인</Text>
       <Text>{'\n'}</Text>
       <TextInput
         style={{
@@ -89,9 +72,10 @@ function SignUpScreen({navigation}) {
         secureTextEntry
       />
       <Text>{'\n'}</Text>
-      <Button title="회원가입" onPress={onSignUp} />
+      {/* <Button title="로그인" onPress={() => navigation.navigate('Tabs')} /> */}
+      <Button title="로그인" onPress={onSignIn} />
     </View>
   );
 }
 
-export default SignUpScreen;
+export default SignInScreen;
