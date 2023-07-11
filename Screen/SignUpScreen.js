@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Text, TextInput, Button, Alert} from 'react-native';
 import {NET_IP} from '@env';
+import UserContext from "../UserContext";
 
 function SignUpScreen({navigation}) {
+  const { globalUserId, setGlobalUserId } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +26,7 @@ function SignUpScreen({navigation}) {
         if (response.status === 200) {
           // 회원가입에 성공했을 경우의 처리
           Alert.alert('축하', '회원가입이 완료되었습니다');
+          setGlobalUserId(userId);
           return navigation.navigate('TabNavigation', {isKakaoLogin: false});
           // return response.json();
         } else if (response.status === 400) {

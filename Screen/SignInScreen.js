@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Text, TextInput, Button, Alert, StyleSheet} from 'react-native';
 import {NET_IP} from '@env';
+import UserContext from "../UserContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
 });
 
 function SignInScreen({navigation}) {
+  const { globalUserId, setGlobalUserId } = useContext(UserContext);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
@@ -42,6 +44,7 @@ function SignInScreen({navigation}) {
           if (response.status === 200) {
             // 로그인 성공 처리
             Alert.alert('축하', '로그인이 완료되었습니다');
+            setGlobalUserId(userId);
             return navigation.navigate('TabNavigation', {isKakaoLogin: false});
             // return response.json();
           } else if (response.status === 400) {

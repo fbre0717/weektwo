@@ -1,7 +1,11 @@
-import * as React from 'react';
+import React, { useContext } from "react";
+import UserContext from "../../UserContext";
 import {ScrollView, Text, View} from 'react-native';
 
 function FriendScreen() {
+  const { globalUserId, setGlobalUserId } = useContext(UserContext);
+
+  console.log(globalUserId);
   return (
     <ScrollView>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
