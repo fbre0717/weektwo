@@ -42,7 +42,7 @@ function SignInScreen({navigation}) {
           if (response.status === 200) {
             // 로그인 성공 처리
             Alert.alert('축하', '로그인이 완료되었습니다');
-            return navigation.navigate('TabNavigation');
+            return navigation.navigate('TabNavigation', {isKakaoLogin: false});
             // return response.json();
           } else if (response.status === 400) {
             // 비밀번호 불일치 처리

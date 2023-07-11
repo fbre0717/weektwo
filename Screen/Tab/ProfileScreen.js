@@ -13,7 +13,9 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {NET_IP} from '@env';
 
-function ProfileScreen() {
+function ProfileScreen({route}) {
+  const { isKakaoLogin } = route.params;
+
   const [username, setUsername] = useState('오현');
   const [userbirth, setUserbirth] = useState('1990년 4월 1일');
   const [userhobby, setUserhobby] = useState('독서, 여행, 요리');
@@ -33,6 +35,7 @@ function ProfileScreen() {
     setEditingModal(false);
     setFieldToEdit(null);
     setNewFieldValue('');
+    console.log(isKakaoLogin);
   };
 
   const getModalTitle = () => {
@@ -166,7 +169,9 @@ function ProfileScreen() {
       <Text style={styles.header}>Profile</Text>
       <Image
         style={styles.profileImage}
-        source={{uri: 'https://via.placeholder.com/300'}}
+        // source={{uri: 'https://via.placeholder.com/300'}}
+        source={{uri: 'https://k.kakaocdn.net/dn/rVsuh/btsnhdJPoCo/SZkYKHemVFzL9pTPJO2jDK/img_640x640.jpg'}}
+        
       />
       <View style={styles.profileInfo}>
         <MaterialIcons name="face" size={24} color="#4682B4" />

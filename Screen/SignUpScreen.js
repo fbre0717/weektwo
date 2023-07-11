@@ -24,7 +24,7 @@ function SignUpScreen({navigation}) {
         if (response.status === 200) {
           // 회원가입에 성공했을 경우의 처리
           Alert.alert('축하', '회원가입이 완료되었습니다');
-          return navigation.navigate('TabNavigation');
+          return navigation.navigate('TabNavigation', {isKakaoLogin: false});
           // return response.json();
         } else if (response.status === 400) {
           // 이미 존재하는 사용자일 경우의 처리
