@@ -1,18 +1,24 @@
 import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import HomeScreen from './Tab/HomeScreen';
-import SettingsScreen from './Tab/SettingsScreen';
+import ProfileScreen from './Tab/ProfileScreen';
 import DiaryScreen from './Tab/DiaryScreen';
+import FriendScreen from './Tab/FriendScreen';
 
 const TabNavigator = createBottomTabNavigator();
 
 export default function TabNavigation() {
   return (
-    <TabNavigator.Navigator>
-      <TabNavigator.Screen name="Home" component={HomeScreen} />
-      <TabNavigator.Screen name="Settings" component={SettingsScreen} />
-      <TabNavigator.Screen name="Diary" component={DiaryScreen} />
+    <TabNavigator.Navigator screenOptions={{tabBarIcon: () => null,
+        tabBarLabelStyle: {
+          fontSize: 18, // 라벨 글씨 크기를 조절하세요.
+          marginBottom: 10, // 라벨의 위치를 원하는대로 조절하세요.
+        },
+      }}
+    >
+      <TabNavigator.Screen name="ProfileScreen" component={ProfileScreen} />
+      <TabNavigator.Screen name="DiaryScreen" component={DiaryScreen} />
+      <TabNavigator.Screen name="FriendScreen" component={FriendScreen} />
     </TabNavigator.Navigator>
   );
 }

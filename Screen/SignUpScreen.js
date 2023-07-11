@@ -7,43 +7,49 @@ function SignUpScreen({navigation}) {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
 
+  const realSignUp = async () => {
+    fetch(NET_IP + 'signUp', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
+        password: password,
+        username: username,
+      }),
+    })
+      .then(response => {
+        if (response.status === 200) {
+          // 회원가입에 성공했을 경우의 처리
+          Alert.alert('축하', '회원가입이 완료되었습니다');
+          return navigation.navigate('TabNavigation');
+          // return response.json();
+        } else if (response.status === 400) {
+          // 이미 존재하는 사용자일 경우의 처리
+          Alert.alert('경고', '이미 존재하는 사용자입니다');
+          return response.json();
+        } else if (response.status === 500) {
+          // 서버 오류로 인해 회원가입에 실패한 경우의 처리
+          Alert.alert('경고', '회원가입에 실패했습니다');
+          return response.json();
+        }
+      })
+      .catch(error => {
+        // 네트워크 오류 등 다른 이유로 인한 실패 시 처리
+        console.error('Error:', error);
+      });
+  };
+
   const onSignUp = async () => {
     if (userId == '' || password == '' || username == '') {
       Alert.alert('경고', '다시 입력해주세요');
     } else {
-      fetch(NET_IP + 'signUp', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-          password: password,
-          username: username,
-        }),
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            console.error(response.status);
-            throw new Error('서버에서 실패 상태 코드를 반환했습니다.');
-          }
-        })
-        .then(responseData => {
-          // console.log(JSON.stringify(responseData));
-          console.log(responseData['message']);
-          if (responseData['message'] == '회원 가입에 성공하였습니다.') {
-            Alert.alert('축하', '회원가입이 완료되었습니다');
-            return navigation.navigate('TabNavigation');
-          } else {
-            Alert.alert('경고', '회원가입에 실패했습니다');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      Alert.alert('알림', '회원가입 하시겠습니까?', [
+        {text: '취소', onPress: () => null, style: 'cancel'},
+        {text: '예', onPress: () => realSignUp()},
+      ]);
     }
   };
 

@@ -1,32 +1,34 @@
-import React, {useState} from 'react';
-import {Alert, Text, View, TextInput, Button, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Alert,
+  BackHandler,
+} from 'react-native';
 import {NET_IP} from '@env';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
   },
   title: {
+    fontSize: 24,
     width: '100%',
     borderColor: 'gray',
-    borderWidth: 1,
-    padding: 5,
-    fontSize: 24,
-    textAlignVertical: 'top',
+    borderBottomWidth: 1,
   },
   content: {
+    flex: 1,
     width: '100%',
-    height: '82%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    padding: 5,
     textAlignVertical: 'top',
+    borderColor: 'gray',
+    borderBottomWidth: 1,
   },
   buttonContainer: {
     width: '100%',
-    justifyContent: 'flex-end',
   },
 });
 
@@ -34,40 +36,62 @@ const WriteScreen = ({navigation}) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
+  const realSavePost = async () => {
+    fetch(NET_IP + 'write', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: title,
+        content: content,
+      }),
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.error(response.status);
+          throw new Error('서버에서 실패 상태 코드를 반환했습니다.');
+        }
+      })
+      .then(responseData => {
+        // 성공
+        console.log(JSON.stringify(responseData));
+        console.log(title, content);
+        navigation.goBack();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  };
+
   const savePost = async () => {
     if (title == '' || content == '') {
       Alert.alert('경고', '다시 입력해주세요');
     } else {
-      fetch(NET_IP + 'write', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: title,
-          content: content,
-        }),
-      })
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            console.error(response.status);
-            throw new Error('서버에서 실패 상태 코드를 반환했습니다.');
-          }
-        })
-        .then(responseData => {
-          // 성공
-          console.log(JSON.stringify(responseData));
-          console.log(title, content);
-          navigation.goBack();
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+      Alert.alert('알림', '저장하시겠습니까?', [
+        {text: '취소', onPress: () => null, style: 'cancel'},
+        {text: '예', onPress: () => realSavePost()},
+      ]);
     }
   };
+
+  const backAction = () => {
+    Alert.alert('알림', '저장하지 않고 나가시겠습니까?', [
+      {text: '취소', onPress: () => null, style: 'cancel'},
+      {text: '예', onPress: () => navigation.goBack()},
+    ]);
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', backAction);
+    };
+  }, []);
 
   return (
     <View style={styles.container}>

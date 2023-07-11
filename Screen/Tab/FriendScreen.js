@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 
-function SettingsScreen() {
+function FriendScreen() {
   return (
     <ScrollView>
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -50,4 +50,4 @@ function SettingsScreen() {
   );
 }
 
-export default SettingsScreen;
+export default FriendScreen;

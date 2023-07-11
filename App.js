@@ -50,13 +50,13 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="DefaultScreen">
-        <Stack.Screen name="DefaultScreen" component={DefaultScreen} />
-        <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="SignInScreen" component={SignInScreen} />
-        <Stack.Screen name="TabNavigation" component={TabNavigation} />
-        <Stack.Screen name="DiaryDetailScreen" component={DiaryDetailScreen} />
-        <Stack.Screen name="WriteScreen" component={WriteScreen} />
+        <Stack.Screen name="DefaultScreen" component={DefaultScreen} options={{headerShown: false,}} />
+        <Stack.Screen name="DetailsScreen" component={DetailsScreen} options={{headerShown: false,}}/>
+        <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{headerShown: false,}}/>
+        <Stack.Screen name="SignInScreen" component={SignInScreen} options={{headerShown: false,}}/>
+        <Stack.Screen name="TabNavigation" component={TabNavigation} options={{headerShown: false,}}/>
+        <Stack.Screen name="DiaryDetailScreen" component={DiaryDetailScreen} options={{headerShown: false,}}/>
+        <Stack.Screen name="WriteScreen" component={WriteScreen} options={{headerShown: false,}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

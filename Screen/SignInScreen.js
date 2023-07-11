@@ -38,18 +38,27 @@ function SignInScreen({navigation}) {
         }),
       })
         .then(response => {
-          if (response.ok) {
+          // console.log(response.json());
+          if (response.status === 200) {
+            // 로그인 성공 처리
+            Alert.alert('축하', '로그인이 완료되었습니다');
+            return navigation.navigate('TabNavigation');
+            // return response.json();
+          } else if (response.status === 400) {
+            // 비밀번호 불일치 처리
+            Alert.alert('경고', '비밀번호가 일치하지 않습니다');
             return response.json();
-          } else {
-            console.error(response.status);
-            throw new Error('서버에서 실패 상태 코드를 반환했습니다.');
+          } else if (response.status === 404) {
+            // 사용자를 찾을 수 없음 처리
+            Alert.alert('경고', '사용자가 존재하지 않습니다');
+            return response.json();
+          } else if (response.status === 500) {
+            // 서버 오류 처리
+            return response.json();
           }
         })
-        .then(responseData => {
-          console.log(JSON.stringify(responseData));
-          return navigation.navigate('TabNavigation');
-        })
         .catch(error => {
+          // 네트워크 오류 또는 기타 오류 처리
           console.error('Error:', error);
         });
     }
