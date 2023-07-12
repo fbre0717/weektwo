@@ -16,20 +16,18 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {NET_IP} from '@env';
 import UserContext from '../../UserContext';
 
-function ProfileScreen({route, navigation}) {
+function FriendDetailScreen({route, navigation}) {
+  const {data} = route.params;
+  // console.log(route.params);
+
   const {globalUserId, setGlobalUserId} = useContext(UserContext);
   const {isKakaoLogin} = route.params;
   const [loading, setLoading] = useState(false);
 
   const [userimage, setUserimage] = useState('https://via.placeholder.com/300');
-  const [username, setUsername] = useState('이름이 무엇인가요?');
-  const [userbirth, setUserbirth] = useState('생일이 언제인가요?');
-  const [userhobby, setUserhobby] = useState('취미가 무엇인가요?');
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingModal, setEditingModal] = useState(false);
-  const [fieldToEdit, setFieldToEdit] = useState(null);
-  const [newFieldValue, setNewFieldValue] = useState('');
+  const [username, setUsername] = useState('친구 이름');
+  const [userbirth, setUserbirth] = useState('친구 생일');
+  const [userhobby, setUserhobby] = useState('친구 취미');
 
   const getKakaoProfile = () => {
     KakaoLogin.getProfile()
@@ -59,16 +57,16 @@ function ProfileScreen({route, navigation}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: globalUserId,
+          userId: data.userId,
         }),
       });
 
       if (response.status === 200) {
-        const data = await response.json();
-        console.log(data);
-        setUserhobby(data.hobby);
-        setUsername(data.username);
-        setUserbirth(data.birth);
+        const newdata = await response.json();
+        console.log(newdata);
+        setUserhobby(newdata.hobby);
+        setUsername(newdata.username);
+        setUserbirth(newdata.birth);
       } else {
         const errorData = await response.json();
         console.error('Server Error:', errorData.message);
@@ -99,96 +97,6 @@ function ProfileScreen({route, navigation}) {
     return unsubscribe;
   }, [navigation]);
 
-  const openModal = field => {
-    setFieldToEdit(field);
-    setModalVisible(true);
-  };
-
-  const initModal = () => {
-    setModalVisible(false);
-    setEditingModal(false);
-    setFieldToEdit(null);
-    setNewFieldValue('');
-    console.log(isKakaoLogin);
-  };
-
-  const getModalTitle = () => {
-    switch (fieldToEdit) {
-      case 'username':
-        return '이름을 변경하시겠습니까?';
-      case 'birth':
-        return '생일을 변경하시겠습니까?';
-      case 'hobby':
-        return '취미를 변경하시겠습니까?';
-      default:
-        return '';
-    }
-  };
-
-  const getModalPlaceHolder = () => {
-    switch (fieldToEdit) {
-      case 'username':
-        return '이름을 입력하세요';
-      case 'birth':
-        return '생일을 입력하세요';
-      case 'hobby':
-        return '취미를 입력하세요';
-      default:
-        return '';
-    }
-  };
-
-  const updateServerInfo = async (field, newValue) => {
-    console.log(NET_IP + 'modify_profile/');
-
-    fetch(NET_IP + 'modify_profile/', {
-      method: 'POST', // 서버에 맞는 HTTP 메소드를 사용하세요.
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        type: field,
-        content: newValue,
-        userId: globalUserId,
-      }),
-    })
-      .then(async response => {
-        if (response.status === 200) {
-          switch (field) {
-            case 'username':
-              setUsername(newValue);
-              break;
-            case 'birth':
-              setUserbirth(newValue);
-              break;
-            case 'hobby':
-              setUserhobby(newValue);
-              break;
-            default:
-              break;
-          }
-        } else {
-          // 오류 처리
-          const responseMessage = await response.json();
-          console.log(responseMessage);
-          console.error('서버에서 오류가 발생했습니다.');
-          Alert.alert('Error', responseMessage.message);
-        }
-      })
-      .catch(error => {
-        // 네트워크 오류 등 다른 이유로 인한 실패 시 처리
-        console.error('Error:', error);
-      });
-  };
-
-  const saveEditedInfo = async newValue => {
-    if (newValue == '') {
-      Alert.alert('경고', '다시 입력해주세요');
-    } else {
-      await updateServerInfo(fieldToEdit, newValue);
-      initModal();
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -201,76 +109,23 @@ function ProfileScreen({route, navigation}) {
         </View>
       ) : (
         <>
-          <Modal animationType="fade" transparent={true} visible={modalVisible}>
-            <View style={styles.modalBackDrop}>
-              <View style={styles.modalContent}>
-                {!editingModal ? (
-                  //editingModal이 false이므로 변경할 것인지를 물어본다.
-                  <>
-                    <Text style={styles.modalText}>{getModalTitle()}</Text>
-                    <View style={styles.modalButtons}>
-                      {/* 예를 누르면 editingModal을 true로 설정하여 editmodal로 변경한다. */}
-                      <TouchableOpacity
-                        style={styles.modalButton}
-                        onPress={() => {
-                          setEditingModal(!editingModal);
-                        }}>
-                        <Text style={styles.modalButtonText}>예</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.modalButton}
-                        onPress={initModal}>
-                        <Text style={styles.modalButtonText}>아니요</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                ) : (
-                  //editingModal이 true이므로 저장할 것인지 물어본다.
-                  <>
-                    <TextInput
-                      style={styles.modalTextInput}
-                      placeholder={getModalPlaceHolder()}
-                      onChangeText={text => setNewFieldValue(text)}
-                      value={newFieldValue}
-                    />
-                    <View style={styles.modalButtons}>
-                      {/* 저장을 누르면 editingModal을 false로 설정하여 원래 상태로 되돌아간다. */}
-                      <TouchableOpacity
-                        style={styles.modalButton}
-                        onPress={() => {
-                          saveEditedInfo(newFieldValue);
-                        }}>
-                        <Text style={styles.modalButtonText}>저장</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.modalButton}
-                        onPress={initModal}>
-                        <Text style={styles.modalButtonText}>취소</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </>
-                )}
-              </View>
-            </View>
-          </Modal>
           <ScrollView>
             <View style={styles.zz}>
+              <Text style={styles.header}>Profile</Text>
               <Image
                 style={styles.profileImage}
-                source={{uri: userimage}}
+                source={{uri: data.imageUrl}}
                 // source={{uri: 'https://k.kakaocdn.net/dn/rVsuh/btsnhdJPoCo/SZkYKHemVFzL9pTPJO2jDK/img_640x640.jpg'}}
               />
               <View style={styles.profileInfo}>
                 <MaterialIcons name="face" size={24} color="#4682B4" />
                 <Text style={styles.infoLabel}>회원 </Text>
-                <Text style={styles.infoValue}>{globalUserId}</Text>
+                <Text style={styles.infoValue}>{data.userId}</Text>
               </View>
               <View style={styles.profileInfo}>
                 <MaterialIcons name="face" size={24} color="#4682B4" />
                 <Text style={styles.infoLabel}>이름 </Text>
-                <TouchableOpacity onPress={() => openModal('username')}>
-                  <Text style={styles.infoValue}>{username}</Text>
-                </TouchableOpacity>
+                <Text style={styles.infoValue}>{username}</Text>
               </View>
               <View style={styles.profileInfo}>
                 <MaterialIcons name="cake" size={24} color="#4682B4" />
@@ -388,4 +243,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default FriendDetailScreen;

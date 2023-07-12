@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {FAB} from 'react-native-paper';
 import {
   ScrollView,
@@ -9,19 +9,11 @@ import {
   Image,
 } from 'react-native';
 import {NET_IP} from '@env';
+import UserContext from '../../UserContext';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  diaryItem: {
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#f8f8f8',
-  },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 20,
   },
   content: {
     fontSize: 16,
@@ -36,7 +28,31 @@ const styles = StyleSheet.create({
   midcontainer: {
     flex: 1,
     justifyContent: 'center', // 컨테이너의 수직 중앙에 있는 텍스트를 정렬
-    alignItems: 'center',     // 컨테이너의 가로 중앙에 있는 텍스트를 정렬
+    alignItems: 'center', // 컨테이너의 가로 중앙에 있는 텍스트를 정렬
+  },
+  diaryItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#f2f2f2",
+    borderBottomWidth: 1,
+    borderColor: "#dddddd",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
+  midcontainer: {
+    flex: 1,
+    justifyContent: 'center', // 컨테이너의 수직 중앙에 있는 텍스트를 정렬
+    alignItems: 'center', // 컨테이너의 가로 중앙에 있는 텍스트를 정렬
   },
 });
 
@@ -68,22 +84,50 @@ const styles = StyleSheet.create({
 // ];
 
 const DiaryScreen = ({navigation}) => {
+  const {globalUserId, setGlobalUserId} = useContext(UserContext);
   const [diaryDB, setDiaryDB] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchDiaryDB = async () => {
     setLoading(true);
-    try {
-      // API 호출을변경하려면 URL만 수정하면 됩니다.
-      const response = await fetch(NET_IP + 'show_all_write');
-      const data = await response.json();
+    // try {
+    //   // API 호출을변경하려면 URL만 수정하면 됩니다.
+    //   const response = await fetch(NET_IP + 'show_all_write');
+    //   const data = await response.json();
 
-      setDiaryDB(data);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
+    //   setDiaryDB(data);
+    //   setLoading(false);
+    // } catch (error) {
+    //   console.error(error);
+    //   setLoading(false);
+    // }
+
+    fetch(NET_IP + 'show_all_write', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: globalUserId,
+      }),
+    })
+      .then(async response => {
+        if (response.status === 200) {
+          const responseData = await response.json();
+          console.log(responseData); // 여기에서 JSON 형식의 응답 body가 출력됩니다.
+          setDiaryDB(responseData);
+          setLoading(false);
+          return responseData;
+        } else if (response.status === 500) {
+          setLoading(false);
+          return response.json();
+        }
+      })
+      .catch(error => {
+        setLoading(false);
+        console.error('Error:', error);
+      });
   };
 
   useEffect(() => {
@@ -111,8 +155,6 @@ const DiaryScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       {loading ? (
-        // 다음과 같이 이미지를 로딩할 때 View 태그의 바깥쪽에 배치합니다.
-        // 이렇게 하면 렌더링 시에 스크롤 뷰와 겹치지 않습니다.
         <View style={styles.midcontainer}>
           <Image
             source={require('../../Image/pngwing.com.png')} // 로컬 이미지 경로

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
   View,
   TextInput,
@@ -9,6 +9,7 @@ import {
   BackHandler,
 } from 'react-native';
 import {NET_IP} from '@env';
+import UserContext from "../../UserContext";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
 });
 
 const WriteScreen = ({navigation}) => {
+  const {globalUserId, setGlobalUserId} = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -46,6 +48,7 @@ const WriteScreen = ({navigation}) => {
       body: JSON.stringify({
         title: title,
         content: content,
+        userId: globalUserId,
       }),
     })
       .then(response => {

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Button, View, Text, TextInput} from 'react-native';
+import React, {useState, useContext} from 'react';
+import {Alert, Button, View, Text, TextInput} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
@@ -10,6 +10,10 @@ import SignUpScreen from './Screen/SignUpScreen';
 import SignInScreen from './Screen/SignInScreen';
 import DiaryDetailScreen from './Screen/Tab/DiaryDetailScreen';
 import WriteScreen from './Screen/Tab/WriteScreen';
+import FriendDetailScreen from './Screen/Tab/FriendDetailScreen';
+
+import {NET_IP} from '@env';
+import UserContext from './UserContext';
 
 function DefaultScreen({navigation}) {
   return (
@@ -26,10 +30,13 @@ function DefaultScreen({navigation}) {
 }
 
 function DetailsScreen({navigation}) {
+  const {globalUserId, setGlobalUserId} = useContext(UserContext);
+
   const login = () => {
     KakaoLogin.login()
       .then(result => {
         console.log('Login Success', JSON.stringify(result));
+        kakoSignUp();
         navigation.navigate('TabNavigation', {isKakaoLogin: true});
       })
       .catch(error => {
@@ -38,6 +45,50 @@ function DetailsScreen({navigation}) {
         } else {
           console.log(`Login Fail(code:${error.code})`, error.message);
         }
+      });
+  };
+
+  const kakoSignUp = async () => {
+    KakaoLogin.getProfile()
+      .then(result => {
+        fetch(NET_IP + 'kakao_signup', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: result.id,
+            username: result.nickname,
+            birth: result.birthday,
+            imageUrl: result.profileImageUrl,
+          }),
+        })
+          .then(response => {
+            if (response.status === 200) {
+              // 회원가입에 성공했을 경우의 처리
+              Alert.alert('축하', '회원가입이 완료되었습니다');
+              setGlobalUserId(result.id);
+              return navigation.navigate('TabNavigation', {
+                isKakaoLogin: false,
+              });
+              // return response.json();
+            } else if (response.status === 400) {
+              // 이미 존재하는 사용자일 경우의 처리
+              return response.json();
+            } else if (response.status === 500) {
+              // 서버 오류로 인해 회원가입에 실패한 경우의 처리
+              Alert.alert('경고', '실패했습니다');
+              return response.json();
+            }
+          })
+          .catch(error => {
+            // 네트워크 오류 등 다른 이유로 인한 실패 시 처리
+            console.error('Error123:', error);
+          });
+      })
+      .catch(error => {
+        console.log(`GetProfile Fail(code:${error.code})`, error.message);
       });
   };
 
@@ -110,6 +161,11 @@ function App() {
           <Stack.Screen
             name="WriteScreen"
             component={WriteScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="FriendDetailScreen"
+            component={FriendDetailScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
